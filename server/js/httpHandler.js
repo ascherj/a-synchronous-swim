@@ -19,6 +19,8 @@ var actions = {
       var nextMessage = messageQueue.dequeue();
       if (nextMessage) {
         sendResponse(res, nextMessage, 200);
+      } else {
+        sendResponse(res, 'Initializing server', 200);
       }
     }
 
