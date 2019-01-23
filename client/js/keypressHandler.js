@@ -8,7 +8,16 @@ $('body').on('keydown', (event) => {
       type: 'POST',
       data: JSON.stringify(direction.toLowerCase()),
       success: (data) => {
-        SwimTeam.move(JSON.parse(data));
+
+        $.ajax({
+          url: 'http://127.0.0.1:3000',
+          type: 'GET',
+          success: (data) => {
+            SwimTeam.move(JSON.parse(data));
+          },
+          error: () => console.log('error')
+        });
+
       },
       error: () => console.log('error')
     });
@@ -17,9 +26,8 @@ $('body').on('keydown', (event) => {
 
 $('button').on('click', (event) => {
   $.ajax({
-    url: 'http://127.0.0.1:3000',
+    url: 'http://127.0.0.1:3000/random',
     type: 'GET',
-    data: JSON.stringify('random'),
     success: (data) => {
       SwimTeam.move(JSON.parse(data));
     },

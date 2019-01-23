@@ -1,7 +1,6 @@
 const headers = require('./cors');
 const messageQueue = require('./messageQueue');
 
-
 var sendResponse = function(res, data, statusCode = 200) {
   res.writeHead(statusCode, headers);
   res.end(JSON.stringify(data));
@@ -9,10 +8,20 @@ var sendResponse = function(res, data, statusCode = 200) {
 
 var actions = {
   'GET': function(req, res) {
-    var directions = ['up', 'down', 'left', 'right'];
-    var randomIndex = Math.floor(Math.random() * directions.length);
-    var randomDirection = directions[randomIndex];
-    sendResponse(res, randomDirection, 200);
+
+    if (req.url === '/random') {
+      var directions = ['up', 'down', 'left', 'right'];
+      var randomIndex = Math.floor(Math.random() * directions.length);
+      var randomDirection = directions[randomIndex];
+      sendResponse(res, randomDirection, 200);
+
+    } else {
+      var nextMessage = messageQueue.dequeue();
+      if (nextMessage) {
+        sendResponse(res, nextMessage, 200);
+      }
+    }
+
   },
   'POST': function(req, res) {
     var body = '';
@@ -22,8 +31,8 @@ var actions = {
       body += chunk;
     }).on('end', () => {
       message = JSON.parse(body);
-      // messageQueue.enqueue(message);
-      sendResponse(res, message, 201);
+      messageQueue.enqueue(message);
+      sendResponse(res, 'Message enqueued', 201);
     });
   }
 }
