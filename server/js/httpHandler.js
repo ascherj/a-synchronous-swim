@@ -15,7 +15,16 @@ var actions = {
     sendResponse(res, randomDirection, 200);
   },
   'POST': function(req, res) {
+    var body = '';
+    var message = '';
 
+    req.on('data', (chunk) => {
+      body += chunk;
+    }).on('end', () => {
+      message = JSON.parse(body);
+      // messageQueue.enqueue(message);
+      sendResponse(res, message, 201);
+    });
   }
 }
 

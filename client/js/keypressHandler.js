@@ -2,7 +2,16 @@ $('body').on('keydown', (event) => {
   var arrowPress = event.key.match(/Arrow(Up|Down|Left|Right)/);
   if (arrowPress) {
     var direction = arrowPress[1];
-    SwimTeam.move(direction.toLowerCase());
+
+    $.ajax({
+      url: 'http://127.0.0.1:3000',
+      type: 'POST',
+      data: JSON.stringify(direction.toLowerCase()),
+      success: (data) => {
+        SwimTeam.move(JSON.parse(data));
+      },
+      error: () => console.log('error')
+    });
   }
 });
 
@@ -10,8 +19,8 @@ $('button').on('click', (event) => {
   $.ajax({
     url: 'http://127.0.0.1:3000',
     type: 'GET',
+    data: JSON.stringify('random'),
     success: (data) => {
-      console.log('server responded with', data)
       SwimTeam.move(JSON.parse(data));
     },
     error: () => console.log('error')
